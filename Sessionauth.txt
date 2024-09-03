@@ -1,0 +1,38 @@
+To Set up sessions
+
+First install express-sessions
+import * from express-sessions as sessions
+import * from passport as passport
+
+app.use(session({secret:"",reave:"",saveUinitialized:"", cookie:{maxage:""}}))
+slot this code into the main.ts file
+
+app.use(passport.initializw())
+app.use(passport.session())
+
+open a file called session.serializer.ts in the auth directory
+
+import serializer and injectable from their respectfull sources
+copy and paster this code in the file
+        export class SessionSerializer extends PassportSerializer {
+                serializeUser(User:any, done:(err:Error, user:any) => void):any{
+                    done(null, {id:user._id});
+                }
+                deserializeUser(payload:any, done:(err:Error, payload:String) => void):any{
+                    const user= this.userService.findById(payload.id)
+                    done(null, payload)
+                }
+        }
+
+        the go to your auth module and register your session serializerin the prviders section of the module file
+        under the imports array input PassportModule.register({session:true})
+cause Sessions are false by default 
+
+Then in the local-atuh guardd file 
+
+ async canActiviate(context:ExecutionContext){
+    const result = (await super.canActiviate(context)) as boolean;
+    const request = context.switchToHttp().getRequest();
+    await super.logIn(request);
+    return result;
+ }
