@@ -24,6 +24,8 @@ export class AuthService {
   }
 
   async registerUser(createUserDto: CreateUserDto): Promise<User> {
+    // check if the email already exists
+    //also encrypt the password before saving it in the database
     const createdUser = new this.UserModel(createUserDto);
     // for now we just save the user in the long run we will implement bcrypt for password hashing anad
     // other necessary authentication stuff

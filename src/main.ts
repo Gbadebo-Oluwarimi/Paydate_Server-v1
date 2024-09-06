@@ -11,10 +11,12 @@ async function bootstrap() {
   dotenv.config();
 
   const app = await NestFactory.create(AppModule);
-  app.use(cors({
-    credentials:true,
-    origin:"http://localhost:5173"
-  }))
+  app.use(
+    cors({
+      credentials: true,
+      origin: 'http://localhost:5173',
+    }),
+  );
   app.use(
     session({
       secret: 'topsecret',
