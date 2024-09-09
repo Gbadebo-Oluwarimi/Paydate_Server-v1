@@ -31,17 +31,17 @@ export class AppController {
         !CreateUserDto.companyName ||
         !CreateUserDto.email
       ) {
-        console.log('All the input fields needs to be filled');
-        return res.send({ message: 'Please input all the field' });
+        console.log('All the input fields needs to be flled');
+        throw new Error('All fields must be flled');
       } else {
         const user = await this.authService.registerUser(CreateUserDto);
-
-        // Automatically log in the new user
+        if (!user) {
+          throw new Error('The user was not created successfully');
+        }
+        // if the user was created successfully Automatically log in the new user
         req.logIn(user, (err) => {
           if (err) {
-            return res
-              .status(500)
-              .send({ message: 'Failed to log in after sign-up' });
+            throw new Error('An error Occurred');
           }
           return res.status(201).send(user);
         });
@@ -58,6 +58,9 @@ export class AppController {
   @Post('auth/login')
   async login(@Request() req) {
     console.log('ran', req.session);
+    if (!req.user) {
+      console.log('the user was not logged in successfully');
+    }
     return req.user;
     // return this.authService.login(loginuser);
   }
@@ -68,11 +71,22 @@ export class AppController {
     return req.user;
   }
 
+  @UseGuards(AuthenticatedGuard)
+  @Get('check-session')
+  checkSession(@Request() req, @Response() res) {
+    console.log('requestoin user');
+    if (req.user) {
+      return res.status(200).send({ isAuthenticated: true, user: req.user });
+    } else {
+      return res.status(200).send({ isAuthenticated: false });
+    }
+  }
+
   // Route to Log out a user that is already logged in
   @UseGuards(AuthenticatedGuard)
   @Post('logout')
   async logout(@Request() req, @Response() res) {
-    req.logout((err: any) => {
+    req.logout((err) => {
       if (err) {
         return res.status(500).send({ message: 'Failed to logout' });
       }

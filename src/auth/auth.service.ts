@@ -15,17 +15,19 @@ export class AuthService {
   async validateuser(username: string, password: string): Promise<any> {
     console.log('validate user ran --auth-Service');
     const user = await this.UserModel.findOne({ username: username });
+    console.log(user);
     if (user && user.password === password) {
       const { password, ...result } = user;
-      return result;
+      console.log('user successfully logged in ', user);
+      return user;
     } else {
-      return null;
+      return;
     }
   }
 
   async registerUser(createUserDto: CreateUserDto): Promise<User> {
     // check if the email already exists
-    //also encrypt the password before saving it in the database
+    //also encrypt the password before saving it inil the database
     const createdUser = new this.UserModel(createUserDto);
     // for now we just save the user in the long run we will implement bcrypt for password hashing anad
     // other necessary authentication stuff

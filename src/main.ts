@@ -23,7 +23,7 @@ async function bootstrap() {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        maxAge: 400000, // Cookie is oonly valid for 4minute after login
+        maxAge: 4000000, // Cookie is oonly valid for 4minute after login
         httpOnly: true, // Helps prevent XSS attacks
         secure: false,
       },
@@ -40,34 +40,34 @@ async function bootstrap() {
   const clientinvoiceService = app.get(InvoiceService);
 
   // Function that runs every day to check if an invoice/todo expiry date lands on today's date
-  cron.schedule('* * * * *', async () => {
-    function getTodayInISOFormat() {
-      // Get the current date
-      const date = new Date();
+  //   cron.schedule('* * * * *', async () => {
+  //     function getTodayInISOFormat() {
+  //       // Get the current date
+  //       const date = new Date();
 
-      // Set the time to midnight (00:00:00.000)
-      date.setUTCHours(23, 0, 0, 0);
+  //       // Set the time to midnight (00:00:00.000)
+  //       date.setUTCHours(23, 0, 0, 0);
 
-      // Format the date as an ISO string
-      const isoDateString = date.toISOString();
+  //       // Format the date as an ISO string
+  //       const isoDateString = date.toISOString();
 
-      // Return the ISO date string
-      return isoDateString;
-    }
+  //       // Return the ISO date string
+  //       return isoDateString;
+  //     }
 
-    // Example usage
-    const todayISO = getTodayInISOFormat();
-    console.log(todayISO);
-    // Output: "YYYY/MM/DD" (example format)
-    const invoices = await clientinvoiceService.findInvoicesByDate(todayISO);
-    if (invoices.length === 0) {
-      console.log('No invoices to be sent today');
-    } else {
-      console.log(invoices);
-    }
+  //     // Example usage
+  //     const todayISO = getTodayInISOFormat();
+  //     console.log(todayISO);
+  //     // Output: "YYYY/MM/DD" (example format)
+  //     const invoices = await clientinvoiceService.findInvoicesByDate(todayISO);
+  //     if (invoices.length === 0) {
+  //       console.log('No invoices to be sent today');
+  //     } else {
+  //       console.log(invoices);
+  //     }
 
-    console.log('Running a task every minute');
-  });
+  //     console.log('Running a task every minute');
+  //   });
+  // }
 }
-
 bootstrap();
